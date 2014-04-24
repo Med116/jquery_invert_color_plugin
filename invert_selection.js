@@ -1,46 +1,43 @@
-<html>
-<body>
-
-
-<textarea rows="10" cols="50" id="textarea_content">
-	this is a textarea, it will have a credit card 4456 5443 5456 3432 number in it
-</textarea>
-
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>
-
-
-	$(document).on("ready", function(){
-		jQuery("#textarea_content").invert();
-	});
-
-	$.fn.invert = function(){
-		var color = this.css("color");
-		console.log(color);
-		var background = this.css("background-color");
+$.fn.invert = function(){
+		var getInvertedRgbColor, getInvertedColor, getColorArray, getInvertedColorNumber;
 		var getColorArray = function(rgb_color){
 			var color_arr = rgb_color.match(/rgb\((\d+),\s(\d+),\s(\d+)\)/);
 			return(color_arr);
 		}
 
-
-		var invertedColor = getInvertedColor(color);
-		var invertedBackgroundColor = getInvertedColor(background);
-
-		if(color == "black"){
-			var alt_color  = "white"
-			var alt_background = "black";
+		var getInvertedColorNumber = function(num){
+			var new_num;
+			if(num <= 127){
+				new_num = parseInt(127) + parseInt((127 - num));
+			}else{
+				new_num = 127 - (num - 127)
+			}
+			return new_num + 1;
 		}
 
-		if(background == "white"){
-			var alt_color = "white";
-			var alt_background = "black";
+		var getInvertedRgbColor = function(rgb_color){
+			var colorArray = getColorArray(rgb_color);
+			var invertedColorArray = new Array();
+			var rgbString;
+			for(var i=1;i<=3;i++){
+				var invertedColor = getInvertedColorNumber(colorArray[i]);
+				console.log( i + " turns into " + invertedColor);
+				invertedColorArray.push(invertedColor);
+			}
+			rgbString = "rgb(" + parseInt(invertedColorArray[0]) + ", " + parseInt(invertedColorArray[1]) + ", " + parseInt(invertedColorArray[2]) + " )";
+			return rgbString;
+
 		}
+		var color = this.css("color");
+		var invertedColor = getInvertedRgbColor(color);
+		console.log(color + " ===== " + invertedColor);
+		var background = this.css("background-color");
+		var invertedBackgroundColor = getInvertedRgbColor(background);
+		console.log( background + " ===== " + invertedBackgroundColor);
 
 		
 		jQuery(this).on("mouseover",  function(){
-			jQuery(this).css({"background":alt_background, "color":alt_color});
+			jQuery(this).css({"background":invertedBackgroundColor, "color":invertedColor});
 		});
 		jQuery(this).on("mouseleave",  function(){
 			jQuery(this).css({"background":background, "color":color});
@@ -49,8 +46,3 @@
 
 		
 	}
-
-
-</script>
-</body>
-</html>
